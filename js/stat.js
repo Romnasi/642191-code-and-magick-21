@@ -1,70 +1,106 @@
 'use strict';
 
-var CLOUD_WIDTH = 420;
-var CLOUD_HEIGHT = 270;
-var CLOUD_X = 100;
-var CLOUD_Y = 10;
-var GAP = 10;
-var FONT_GAP = 20;
-var BAR_WIDTH = 40;
-var BAR_HEIGHT = 150;
-var BAR_GAP = 50;
+var Cloud = {
+  WIDTH: 420,
+  HEIGHT: 270,
+  X: 100,
+  Y: 10,
+  BACKGROUND_COLOR: 'white',
+  SHADOW_COLOR: 'rgba(0, 0, 0, 0.7)',
+  OUTLINE: 'black'
+};
 
-var renderCloud = function (ctx, x, y, color, outline = '#000') {
+var GAP = 10;
+
+var Font = {
+  GAP: 20,
+  COLOR: 'black',
+  FAMILY: '16px PT Mono'
+};
+
+var Bar = {
+  WIDTH: 40,
+  HEIGHT: 150,
+  GAP: 50
+};
+
+var Player = {
+  NAME: 'Вы',
+  COLOR: 'rgba(255, 0, 0, 1)'
+};
+
+var renderCloud = function (ctx, x, y, color) {
   ctx.fillStyle = color;
-  ctx.fillRect(x, y, CLOUD_WIDTH, CLOUD_HEIGHT);
-  ctx.strokeStyle = outline;
-  ctx.strokeRect(x, y, CLOUD_WIDTH, CLOUD_HEIGHT);
+  ctx.fillRect(x, y, Cloud.WIDTH, Cloud.HEIGHT);
+  ctx.strokeStyle = Cloud.OUTLINE;
+  ctx.strokeRect(x, y, Cloud.WIDTH, Cloud.HEIGHT);
+};
+
+var renderText = function (ctx, text, x, y) {
+  ctx.fillStyle = Font.COLOR;
+  ctx.font = Font.FAMILY;
+  ctx.fillText(
+      text,
+      x,
+      y
+  );
 };
 
 window.renderStatistics = function (ctx, players, times) {
   renderCloud(
       ctx,
-      CLOUD_X + GAP,
-      CLOUD_Y + GAP,
-      'rgba(0, 0, 0, 0.7)'
+      Cloud.X + GAP,
+      Cloud.Y + GAP,
+      Cloud.SHADOW_COLOR
   );
   renderCloud(
       ctx,
-      CLOUD_X,
-      CLOUD_Y,
-      '#fff'
+      Cloud.X,
+      Cloud.Y,
+      Cloud.BACKGROUND_COLOR
   );
 
-  ctx.fillStyle = '#000';
-  ctx.font = '16px PT Mono';
-  ctx.fillText(
+  // Текст - поздравление
+  renderText(
+      ctx,
       'Ура вы победили!',
-      CLOUD_X + FONT_GAP,
-      CLOUD_Y + GAP + FONT_GAP
+      Cloud.X + Font.GAP,
+      Cloud.Y + GAP + Font.GAP
   );
-  ctx.fillText(
+
+  renderText(
+      ctx,
       'Список результатов:',
-      CLOUD_X + FONT_GAP,
-      CLOUD_Y + GAP + FONT_GAP * 2
+      Cloud.X + Font.GAP,
+      Cloud.Y + GAP + Font.GAP * 2
   );
 
+  var getMaxElement = function (elements) {
+    var maxElement = elements[0];
 
-  var getMaxElement = function (arr) {
-    var maxElement = arr[0];
-
-    for (var i = 1; i < arr.length; i++) {
-      if (arr[i] > maxElement) {
-        maxElement = arr[i];
-      }
+    for (var i = 1; i < elements.length; i++) {
+      maxElement = Math.max(maxElement, elements[i]);
     }
 
     return maxElement;
   };
 
+  var getRandomIntInclusive = function (min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min; // Максимум и минимум включаются
+  };
+
+  var getRandomBarColor = function () {
+    return 'hsl(240, ' + getRandomIntInclusive(10, 90) + '%, 50%)';
+  };
 
   var getBarColor = function (player) {
-    if (player === 'Вы') {
-      return 'rgba(255, 0, 0, 1)';
-    } else {
-      return 'hsl(240, ' + Math.random() * 100 + '%, 50%)';
-    }
+    return player === Player.NAME
+      ? Player.COLOR
+      : getRandomBarColor();
   };
+
 
   var maxTime = getMaxElement(times);
 
@@ -72,32 +108,31 @@ window.renderStatistics = function (ctx, players, times) {
   for (var i = 0; i < players.length; i++) {
 
     // Имена игроков
-    ctx.fillStyle = '#000';
-    ctx.fillText(
+    renderText(
+        ctx,
         players[i],
-        CLOUD_X + FONT_GAP * 2 + (BAR_WIDTH + BAR_GAP) * i,
-        CLOUD_Y + CLOUD_HEIGHT - FONT_GAP
+        Cloud.X + Font.GAP * 2 + (Bar.WIDTH + Bar.GAP) * i,
+        Cloud.Y + Cloud.HEIGHT - Font.GAP
     );
 
     // Столбики
     ctx.fillStyle = getBarColor(players[i]);
 
-    var currentBarHeight = (BAR_HEIGHT * times[i]) / maxTime;
+    var currentBarHeight = (Bar.HEIGHT * times[i]) / maxTime;
 
     ctx.fillRect(
-        CLOUD_X + FONT_GAP * 2 + (BAR_WIDTH + BAR_GAP) * i,
-        CLOUD_Y + CLOUD_HEIGHT - FONT_GAP * 2 - BAR_HEIGHT + (BAR_HEIGHT - currentBarHeight), // Смещение столбика по вертикали
-        BAR_WIDTH,
+        Cloud.X + Font.GAP * 2 + (Bar.WIDTH + Bar.GAP) * i,
+        Cloud.Y + Cloud.HEIGHT - Font.GAP * 2 - Bar.HEIGHT + (Bar.HEIGHT - currentBarHeight), // Смещение столбика по вертикали
+        Bar.WIDTH,
         currentBarHeight
     );
 
     // Времена игроков
-    ctx.fillStyle = '#000';
-    ctx.fillText(
+    renderText(
+        ctx,
         Math.round(times[i]),
-        CLOUD_X + FONT_GAP * 2 + (BAR_WIDTH + BAR_GAP) * i,
-        CLOUD_Y + CLOUD_HEIGHT - FONT_GAP * 2 - BAR_HEIGHT + (BAR_HEIGHT - currentBarHeight) - GAP
+        Cloud.X + Font.GAP * 2 + (Bar.WIDTH + Bar.GAP) * i,
+        Cloud.Y + Cloud.HEIGHT - Font.GAP * 2 - Bar.HEIGHT + (Bar.HEIGHT - currentBarHeight) - GAP
     );
-
   }
 };
