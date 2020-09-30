@@ -18,6 +18,11 @@ var Font = {
   FAMILY: '16px PT Mono'
 };
 
+var TextCloud = {
+  WIN: 'Ура вы победили!',
+  RESULTS: 'Список результатов:'
+};
+
 var Bar = {
   WIDTH: 40,
   HEIGHT: 150,
@@ -28,6 +33,7 @@ var Player = {
   NAME: 'Вы',
   COLOR: 'rgba(255, 0, 0, 1)'
 };
+
 
 var renderCloud = function (ctx, x, y, color) {
   ctx.fillStyle = color;
@@ -46,6 +52,37 @@ var renderText = function (ctx, text, x, y) {
   );
 };
 
+
+var getMaxElement = function (elements) {
+  var maxElement = elements[0];
+
+  for (var i = 1; i < elements.length; i++) {
+    maxElement = Math.max(maxElement, elements[i]);
+  }
+
+  return maxElement;
+};
+
+
+var getRandomIntInclusive = function (min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min; // Максимум и минимум включаются
+};
+
+
+var getRandomBarColor = function () {
+  return 'hsl(240, ' + getRandomIntInclusive(10, 90) + '%, 50%)';
+};
+
+
+var getBarColor = function (player) {
+  return player === Player.NAME
+    ? Player.COLOR
+    : getRandomBarColor();
+};
+
+
 window.renderStatistics = function (ctx, players, times) {
   renderCloud(
       ctx,
@@ -63,43 +100,17 @@ window.renderStatistics = function (ctx, players, times) {
   // Текст - поздравление
   renderText(
       ctx,
-      'Ура вы победили!',
+      TextCloud.WIN,
       Cloud.X + Font.GAP,
       Cloud.Y + GAP + Font.GAP
   );
 
   renderText(
       ctx,
-      'Список результатов:',
+      TextCloud.RESULTS,
       Cloud.X + Font.GAP,
       Cloud.Y + GAP + Font.GAP * 2
   );
-
-  var getMaxElement = function (elements) {
-    var maxElement = elements[0];
-
-    for (var i = 1; i < elements.length; i++) {
-      maxElement = Math.max(maxElement, elements[i]);
-    }
-
-    return maxElement;
-  };
-
-  var getRandomIntInclusive = function (min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min; // Максимум и минимум включаются
-  };
-
-  var getRandomBarColor = function () {
-    return 'hsl(240, ' + getRandomIntInclusive(10, 90) + '%, 50%)';
-  };
-
-  var getBarColor = function (player) {
-    return player === Player.NAME
-      ? Player.COLOR
-      : getRandomBarColor();
-  };
 
 
   var maxTime = getMaxElement(times);

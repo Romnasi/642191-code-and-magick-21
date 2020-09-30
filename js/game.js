@@ -1,31 +1,5 @@
 'use strict';
 
-var LEFT_SPEED = 2;
-var RIGHT_SPEED = 5;
-var PROPORTION_WIZARD_HEIGHT = 1.337;
-var PROPORTION_Y = 3;
-var PROPORTION_X = 2;
-
-var fireballSize = 22;
-var wizardWidth = 70;
-var wizardSpeed = 3;
-
-var getFireballSpeed = function (isMovingLeft) {
-  return isMovingLeft ? LEFT_SPEED : RIGHT_SPEED;
-};
-
-var getWizardHeight = function () {
-  return wizardWidth * PROPORTION_WIZARD_HEIGHT;
-};
-
-var getWizardX = function (gameFieldWidth) {
-  return (gameFieldWidth - wizardWidth) / PROPORTION_X;
-};
-
-var getWizardY = function (gameFieldHeight) {
-  return gameFieldHeight / PROPORTION_Y;
-};
-
 window.GameConstants = {
   Fireball: {
     size: fireballSize || 24,
