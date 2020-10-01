@@ -5,22 +5,22 @@ var Cloud = {
   HEIGHT: 270,
   X: 100,
   Y: 10,
-  BACKGROUND_COLOR: 'white',
-  SHADOW_COLOR: 'rgba(0, 0, 0, 0.7)',
-  OUTLINE: 'black'
+  BACKGROUND_COLOR: `white`,
+  SHADOW_COLOR: `rgba(0, 0, 0, 0.7)`,
+  OUTLINE: `black`
 };
 
 var GAP = 10;
 
 var Font = {
   GAP: 20,
-  COLOR: 'black',
-  FAMILY: '16px PT Mono'
+  COLOR: `black`,
+  FAMILY: `16px PT Mono`
 };
 
 var TextCloud = {
-  WIN: 'Ура вы победили!',
-  RESULTS: 'Список результатов:'
+  WIN: `Ура вы победили!`,
+  RESULTS: `Список результатов:`
 };
 
 var Bar = {
@@ -30,8 +30,8 @@ var Bar = {
 };
 
 var Player = {
-  NAME: 'Вы',
-  COLOR: 'rgba(255, 0, 0, 1)'
+  NAME: `Вы`,
+  COLOR: `rgba(255, 0, 0, 1)`
 };
 
 
@@ -72,7 +72,7 @@ var getRandomIntInclusive = function (min, max) {
 
 
 var getRandomBarColor = function () {
-  return 'hsl(240, ' + getRandomIntInclusive(10, 90) + '%, 50%)';
+  return `hsl(240, ` + getRandomIntInclusive(10, 90) + `%, 50%)`;
 };
 
 
@@ -83,7 +83,7 @@ var getBarColor = function (player) {
 };
 
 
-window.renderStatistics = function (ctx, players, times) {
+window.renderStatistics = function (ctx, names, times) {
   renderCloud(
       ctx,
       Cloud.X + GAP,
@@ -113,37 +113,53 @@ window.renderStatistics = function (ctx, players, times) {
   );
 
 
-  var maxTime = getMaxElement(times);
+  var renderBar = function (player, time, maxTime, index) {
 
-  // Гистограмма времён участников
-  for (var i = 0; i < players.length; i++) {
+    var getBarHeight = function () {
+      return (Bar.HEIGHT * time) / maxTime;
+    };
+    var currentBarHeight = getBarHeight();
+    var barsOffsetY = Cloud.Y + Cloud.HEIGHT;
+    var barX = Cloud.X + Font.GAP * 2 + (Bar.WIDTH + Bar.GAP) * index;
+    var barY = barsOffsetY - Font.GAP * 2 - Bar.HEIGHT + (Bar.HEIGHT - currentBarHeight);
+    var barPlayerY = barsOffsetY - Font.GAP;
+    var playerTimeY = barY - GAP;
 
-    // Имена игроков
+    // Риссуем имена игроков
     renderText(
         ctx,
-        players[i],
-        Cloud.X + Font.GAP * 2 + (Bar.WIDTH + Bar.GAP) * i,
-        Cloud.Y + Cloud.HEIGHT - Font.GAP
+        player,
+        barX,
+        barPlayerY
     );
 
-    // Столбики
-    ctx.fillStyle = getBarColor(players[i]);
-
-    var currentBarHeight = (Bar.HEIGHT * times[i]) / maxTime;
+    // Рисуем Столбики
+    ctx.fillStyle = getBarColor(player);
 
     ctx.fillRect(
-        Cloud.X + Font.GAP * 2 + (Bar.WIDTH + Bar.GAP) * i,
-        Cloud.Y + Cloud.HEIGHT - Font.GAP * 2 - Bar.HEIGHT + (Bar.HEIGHT - currentBarHeight), // Смещение столбика по вертикали
+        barX,
+        barY,
         Bar.WIDTH,
         currentBarHeight
     );
 
-    // Времена игроков
+    // Рисуем время игроков
     renderText(
         ctx,
-        Math.round(times[i]),
-        Cloud.X + Font.GAP * 2 + (Bar.WIDTH + Bar.GAP) * i,
-        Cloud.Y + Cloud.HEIGHT - Font.GAP * 2 - Bar.HEIGHT + (Bar.HEIGHT - currentBarHeight) - GAP
+        Math.round(time),
+        barX,
+        playerTimeY
     );
+  };
+
+
+  // Гистограмма времён участников
+
+  for (var i = 0; i < names.length; i++) {
+    var maxTime = getMaxElement(times);
+    var player = names[i];
+    var time = times[i];
+
+    renderBar(player, time, maxTime, i);
   }
 };
