@@ -78,10 +78,10 @@ var renderWizard = function (wizard) {
   return wizardElement;
 };
 
-var renderWizards = function (wizards) {
+var renderWizards = function (wizardsData) {
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < wizards.length; i++) {
-    fragment.appendChild(renderWizard(wizards[i]));
+  for (var i = 0; i < wizardsData.length; i++) {
+    fragment.appendChild(renderWizard(wizardsData[i]));
   }
   similarListElement.appendChild(fragment);
 };
