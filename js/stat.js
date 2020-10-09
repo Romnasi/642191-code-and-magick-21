@@ -83,6 +83,46 @@ var getBarColor = function (player) {
 };
 
 
+var renderBar = function (ctx, player, time, maxTime, index) {
+
+  var getBarHeight = function () {
+    return (Bar.HEIGHT * time) / maxTime;
+  };
+  var currentBarHeight = getBarHeight();
+  var barsOffsetY = Cloud.Y + Cloud.HEIGHT;
+  var barX = Cloud.X + Font.GAP * 2 + (Bar.WIDTH + Bar.GAP) * index;
+  var barY = barsOffsetY - Font.GAP * 2 - Bar.HEIGHT + (Bar.HEIGHT - currentBarHeight);
+  var barPlayerY = barsOffsetY - Font.GAP;
+  var playerTimeY = barY - GAP;
+
+  // Риссуем имена игроков
+  renderText(
+      ctx,
+      player,
+      barX,
+      barPlayerY
+  );
+
+  // Рисуем Столбики
+  ctx.fillStyle = getBarColor(player);
+
+  ctx.fillRect(
+      barX,
+      barY,
+      Bar.WIDTH,
+      currentBarHeight
+  );
+
+  // Рисуем время игроков
+  renderText(
+      ctx,
+      Math.round(time),
+      barX,
+      playerTimeY
+  );
+};
+
+
 window.renderStatistics = function (ctx, names, times) {
   renderCloud(
       ctx,
@@ -113,46 +153,6 @@ window.renderStatistics = function (ctx, names, times) {
   );
 
 
-  var renderBar = function (player, time, maxTime, index) {
-
-    var getBarHeight = function () {
-      return (Bar.HEIGHT * time) / maxTime;
-    };
-    var currentBarHeight = getBarHeight();
-    var barsOffsetY = Cloud.Y + Cloud.HEIGHT;
-    var barX = Cloud.X + Font.GAP * 2 + (Bar.WIDTH + Bar.GAP) * index;
-    var barY = barsOffsetY - Font.GAP * 2 - Bar.HEIGHT + (Bar.HEIGHT - currentBarHeight);
-    var barPlayerY = barsOffsetY - Font.GAP;
-    var playerTimeY = barY - GAP;
-
-    // Риссуем имена игроков
-    renderText(
-        ctx,
-        player,
-        barX,
-        barPlayerY
-    );
-
-    // Рисуем Столбики
-    ctx.fillStyle = getBarColor(player);
-
-    ctx.fillRect(
-        barX,
-        barY,
-        Bar.WIDTH,
-        currentBarHeight
-    );
-
-    // Рисуем время игроков
-    renderText(
-        ctx,
-        Math.round(time),
-        barX,
-        playerTimeY
-    );
-  };
-
-
   // Гистограмма времён участников
 
   for (var i = 0; i < names.length; i++) {
@@ -160,6 +160,6 @@ window.renderStatistics = function (ctx, names, times) {
     var player = names[i];
     var time = times[i];
 
-    renderBar(player, time, maxTime, i);
+    renderBar(ctx, player, time, maxTime, i);
   }
 };
