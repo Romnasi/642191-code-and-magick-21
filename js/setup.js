@@ -7,8 +7,17 @@ var Wizard = {
   EYES_COLOR: [`black`, `red`, `blue`, `yellow`, `green`]
 };
 
+var InputNameLength = {
+  MIN: 2,
+  MAX: 25
+};
+
+var setupOpen = document.querySelector(`.setup-open`);
+var setupClose = document.querySelector(`.setup-close`);
+
 var userDialog = document.querySelector(`.setup`);
-userDialog.classList.remove(`hidden`);
+var userNameInput = userDialog.querySelector(`.setup-user-name`);
+
 
 var similarListElement = userDialog.querySelector(`.setup-similar-list`);
 var similarWizardTemplate = document.querySelector(`#similar-wizard-template`)
@@ -17,6 +26,83 @@ var similarWizardTemplate = document.querySelector(`#similar-wizard-template`)
 
 var numberOfWizard = 4;
 
+
+// Валидация  поля имени окне настройки персонажа
+userNameInput.addEventListener(`input`, function () {
+  var valueLength = userNameInput.value.length;
+
+  if (valueLength < InputNameLength.MIN) {
+    userNameInput.setCustomValidity(`Еще ${InputNameLength.MIN - valueLength} симв.`);
+  } else if (valueLength > InputNameLength.MAX) {
+    userNameInput.setCustomValidity(`Удалите лишние ${valueLength - InputNameLength.MAX} симв.`);
+  } else {
+    userNameInput.setCustomValidity(``);
+  }
+
+  userNameInput.reportValidity();
+});
+
+
+// Взаимодействие с окном настройки персонажа
+
+// ОБработчик Закрытия по Escape
+var onPopupEscPress = function (evt) {
+  if (evt.target.tagName !== `INPUT`) {
+
+    if (evt.key === `Escape`) {
+      evt.preventDefault();
+      closePopup();
+    }
+  }
+};
+
+
+// ОБработчик Закрытия по клику
+var onButtonCloseClick = function () {
+  closePopup();
+};
+
+
+// ОБработчик Закрытия по нажатию Enter
+var onButtonClosePress = function (evt) {
+  if (evt.key === `Enter`) {
+    closePopup();
+  }
+};
+
+
+var openPopup = function () {
+  userDialog.classList.remove(`hidden`);
+
+  document.addEventListener(`keydown`, onPopupEscPress);
+  setupClose.addEventListener(`click`, onButtonCloseClick);
+  setupClose.addEventListener(`keydown`, onButtonClosePress);
+};
+
+
+var closePopup = function () {
+  userDialog.classList.add(`hidden`);
+
+  document.removeEventListener(`keydown`, onPopupEscPress);
+  setupClose.removeEventListener(`keydown`, onButtonCloseClick);
+  setupClose.removeEventListener(`keydown`, onButtonClosePress);
+};
+
+
+// Обработчик открытия настройки по клику на аватар
+setupOpen.addEventListener(`click`, function () {
+  openPopup();
+});
+
+// Обработчик открытия настройки по нажатию Enter
+setupOpen.addEventListener(`keydown`, function (evt) {
+  if (evt.key === `Enter`) {
+    openPopup();
+  }
+});
+
+
+// Моки
 var getRandomIntInclusive = function (min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
