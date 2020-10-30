@@ -28,9 +28,7 @@
   // Взаимодействие с окном настройки персонажа
   // Обработчик Закрытия по Escape
   var onPopupEscPress = function (evt) {
-    if (evt.target.tagName !== `INPUT`) {
-      window.util.isEscEvent(evt, closePopup);
-    }
+    window.util.isEscEvent(evt, closePopup);
   };
 
 
@@ -106,16 +104,17 @@
 
 
   // Обработчик открытия настройки по клику на аватар
-  setupOpen.addEventListener(`click`, function () {
+  const onSetupOpenClick = function () {
     openPopup();
-  });
+  };
 
   // Обработчик открытия настройки по нажатию Enter
-  setupOpen.addEventListener(`keydown`, function (evt) {
-    if (evt.key === `Enter`) {
-      openPopup();
-    }
-  });
+  const onSetupOpenPress = function (evt) {
+    window.util.isEnterEvent(evt, openPopup);
+  };
+
+  setupOpen.addEventListener(`click`, onSetupOpenClick);
+  setupOpen.addEventListener(`keydown`, onSetupOpenPress);
 
 
   // Валидация  поля имени окне настройки персонажа
