@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+
   var Cloud = {
     WIDTH: 420,
     HEIGHT: 270,
@@ -105,7 +106,7 @@
   };
 
 
-  window.renderStatistics = function (ctx, names, times) {
+  var renderStatistics = function (ctx, names, times) {
     renderCloud(
         ctx,
         Cloud.X + GAP,
@@ -145,4 +146,9 @@
       renderBar(ctx, player, time, maxTime, i);
     }
   };
+
+  window.stat = {
+    renderStatistics
+  };
+
 })();

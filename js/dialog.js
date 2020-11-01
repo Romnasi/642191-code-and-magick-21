@@ -59,15 +59,15 @@
   };
 
 
-  const onCoatClick = function () {
+  var onCoatClick = function () {
     colorize(wizardCoat, window.Wizard.COAT_COLOR, `fill`, `coat-color`);
   };
 
-  const onEyesClick = function () {
+  var onEyesClick = function () {
     colorize(wizardEyes, window.Wizard.EYES_COLOR, `fill`, `eyes-color`);
   };
 
-  const onFireballClick = function () {
+  var onFireballClick = function () {
     colorize(setupFireball, window.Wizard.FIREBALL_COLOR, `backgroundColor`, `fireball-color`);
   };
 
@@ -104,12 +104,12 @@
 
 
   // Обработчик открытия настройки по клику на аватар
-  const onSetupOpenClick = function () {
+  var onSetupOpenClick = function () {
     openPopup();
   };
 
   // Обработчик открытия настройки по нажатию Enter
-  const onSetupOpenPress = function (evt) {
+  var onSetupOpenPress = function (evt) {
     window.util.isEnterEvent(evt, openPopup);
   };
 
